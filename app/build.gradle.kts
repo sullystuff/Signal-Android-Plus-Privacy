@@ -83,7 +83,14 @@ ktlint {
 
 android {
   namespace = "org.thoughtcrime.securesms"
-
+  signingConfigs {
+    create("release") {
+      storeFile = file(System.getenv("SIGNAL_KEYSTORE") ?: "/home/sully/sullysignal.keystore")
+      storePassword = System.getenv("SIGNAL_STORE_PASS") ?: "changeme"
+      keyAlias = System.getenv("SIGNAL_KEY_ALIAS") ?: "sullysignal"
+      keyPassword = System.getenv("SIGNAL_KEY_PASS") ?: "changeme"
+    }
+  }
   buildToolsVersion = signalBuildToolsVersion
   compileSdkVersion = signalCompileSdkVersion
   ndkVersion = signalNdkVersion
@@ -298,6 +305,7 @@ android {
 
     getByName("release") {
       isMinifyEnabled = true
+      signingConfig = signingConfigs.getByName("release")
       proguardFiles(*buildTypes["debug"].proguardFiles.toTypedArray())
       buildConfigField("String", "BUILD_VARIANT_TYPE", "\"Release\"")
     }
